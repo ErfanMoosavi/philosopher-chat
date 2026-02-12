@@ -54,9 +54,9 @@ class PhilosopherChat:
         elif command == Commands.LOGIN.value:
             return self._handle_login()
         elif command == Commands.LOGOUT.value:
-            return self.system.logout().value
+            return self._handle_logout()
         elif command == Commands.DELETE_ACCOUNT.value:
-            return self.system.delete_account().value
+            return self._handle_delete_account()
         elif command == Commands.NEW_CHAT.value:
             return self._handle_new_chat()
         elif command == Commands.SELECT_CHAT.value:
@@ -75,16 +75,40 @@ class PhilosopherChat:
             return "Please enter a valid command."
 
     def _handle_signup(self) -> str:
-        username = self.io.get_input("Enter your username: ")
-        password = self.io.get_input("Enter your password: ")
-        self.system.signup(username, password)
-        return self.SUCCESS
+        try:
+            username = self.io.get_input("Enter your username: ")
+            password = self.io.get_input("Enter your password: ")
+            self.system.signup(username, password)
+            return self.SUCCESS
+
+        except Exception as e:
+            self.io.display_message(str(e))
 
     def _handle_login(self) -> str:
-        username = self.io.get_input("Enter your username: ")
-        password = self.io.get_input("Enter your password: ")
-        self.system.login(username, password)
-        return self.SUCCESS
+        try:
+            username = self.io.get_input("Enter your username: ")
+            password = self.io.get_input("Enter your password: ")
+            self.system.login(username, password)
+            return self.SUCCESS
+
+        except Exception as e:
+            self.io.display_message(str(e))
+
+    def _handle_logout(self) -> str:
+        try:
+            self.system.logout()
+            return self.SUCCESS
+
+        except Exception as e:
+            self.io.display_message(str(e))
+
+    def _handle_delete_account(self) -> str:
+        try:
+            self.system.delete_account()
+            return self.SUCCESS
+
+        except Exception as e:
+            self.io.display_message(str(e))
 
     def _handle_new_chat(self) -> str:
         try:
