@@ -71,4 +71,4 @@ pc = PhilosopherChat(BASE_URL, API_KEY, MODEL_NAME)
 pc.run()
 ```
 
-### 3. Follow the CLI prompts to sign up, log in, and start chatting.
+### 3. Follow the prompts to sign up, log in, and start chatting.
