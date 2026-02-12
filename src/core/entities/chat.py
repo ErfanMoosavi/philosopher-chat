@@ -1,7 +1,7 @@
-from .message import Message
-from .philosopher import Philosopher
 from ..exceptions import BadRequestError
 from ..utils.prompt_loading import load_prompt
+from .message import Message
+from .philosopher import Philosopher
 
 
 class Chat:
