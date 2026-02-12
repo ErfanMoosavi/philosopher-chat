@@ -11,7 +11,7 @@ class Chat:
         self.messages: list[Message] = []
 
     def complete_chat(
-        self, input_text: str, username: str, chat_completer
+        self, input_text: str, username: str, name: str, age: str, chat_completer
     ) -> tuple[Message, Message]:
         cleaned_input = input_text.strip()
 
@@ -19,7 +19,7 @@ class Chat:
             raise BadRequestError("Message cannot be empty")
 
         if self._is_first_message():
-            prompt = load_prompt(cleaned_input, self.philosopher.name)
+            prompt = load_prompt(cleaned_input, self.philosopher.name, name, age)
             prompt_msg = Message("user", username, prompt)
             self._add_message(prompt_msg)
 

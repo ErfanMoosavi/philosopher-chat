@@ -78,7 +78,9 @@ class PhilosopherChat:
         try:
             username = self.io.get_input("Enter your username: ")
             password = self.io.get_input("Enter your password: ")
-            self.system.signup(username, password)
+            name = self.io.get_input("Enter your name: ")
+            age = self.io.get_input("Enter your age: ")
+            self.system.signup(username, password, name, age)
             return self.SUCCESS
 
         except Exception as e:

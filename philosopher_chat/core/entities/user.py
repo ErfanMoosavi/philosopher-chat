@@ -5,9 +5,11 @@ from .philosopher import Philosopher
 
 
 class User:
-    def __init__(self, username: str, password: str) -> None:
+    def __init__(self, username: str, password: str, name: str, age: int) -> None:
         self.username = username
         self.password = password
+        self.name = name
+        self.age = age
         self.chats: dict[str, Chat] = {}
         self.selected_chat: Chat | None = None
 

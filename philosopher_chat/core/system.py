@@ -16,13 +16,13 @@ class System:
         self.philosophers: dict[int, Philosopher] = self._load_philosophers()
         self.logged_in_user: User | None = None
 
-    def signup(self, username: str, password: str) -> None:
+    def signup(self, username: str, password: str, name: str, age: int) -> None:
         if self.logged_in_user:
-            raise PermissionDeniedError("You've already logged in")
+            raise PermissionDeniedError("You are already logged in")
         elif self._find_user(username):
             raise BadRequestError(f"Username {username} already taken")
 
-        new_user = User(username, password)
+        new_user = User(username, password, name, age)
         self.users[username] = new_user
 
     def login(self, username: str, password: str) -> None:
@@ -100,7 +100,8 @@ class System:
         return self.philosophers.get(philosopher_id)
 
     def _load_philosophers(self) -> dict[int, Philosopher]:
-        data_dir = Path(__file__).parent.parent / "data" / "philosophers.json"
+        data_dir = Path(__file__).parent.parent / "data/philosophers.json"
+
         with open(data_dir, "r", encoding="utf-8") as f:
             raw_philosophers = json.load(f)
 
