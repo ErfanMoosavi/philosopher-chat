@@ -66,7 +66,7 @@ class PhilosopherChat:
         elif command == Commands.DELETE_CHAT.value:
             return self._handle_delete_chat()
         elif command == Commands.LIST_PHILOSOPHERS.value:
-            return self._handle_get_philosophers()
+            return self._handle_list_philosophers()
         elif command == Commands.HELP.value:
             return "HELP"
         elif command == Commands.EXIT.value:
@@ -115,7 +115,7 @@ class PhilosopherChat:
     def _handle_new_chat(self) -> str:
         try:
             chat_name = self.io.get_input("Enter the chat name: ")
-            philosophers_list = self.system.get_philosophers()
+            philosophers_list = self.system.list_philosophers()
 
             self.io.display_philosophers_list(philosophers_list)
 
@@ -132,10 +132,8 @@ class PhilosopherChat:
             self.system.new_chat(chat_name, actual_philosopher_id)
             return self.SUCCESS
 
-        except (ValueError, IndexError):
-            return "Invalid input. Please enter a valid number."
-        except Exception:
-            return "No philosophers found."
+        except Exception as e:
+            self.io.display_message(str(e))
 
     def _handle_select_chat(self) -> str:
         name = self.io.get_input("Enter the chat name: ")
@@ -187,9 +185,9 @@ class PhilosopherChat:
         except Exception as e:
             self.io.display_message(str(e))
 
-    def _handle_get_philosophers(self) -> str:
+    def _handle_list_philosophers(self) -> str:
         try:
-            philosophers_list = self.system.get_philosophers()
+            philosophers_list = self.system.list_philosophers()
             self.io.display_philosophers_list(philosophers_list)
 
         except Exception as e:

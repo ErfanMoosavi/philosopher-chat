@@ -24,9 +24,9 @@ def root():
 
 
 @app.get("/philosophers", status_code=status.HTTP_200_OK)
-def get_philosophers():
+def list_philosophers():
     try:
-        philosophers = pc.get_philosophers()
+        philosophers = pc.list_philosophers()
         return philosophers
     except NotFoundError:
         raise HTTPException(
