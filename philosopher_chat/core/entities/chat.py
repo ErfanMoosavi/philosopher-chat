@@ -1,6 +1,7 @@
 from .message import Message
 from .philosopher import Philosopher
 from ..exceptions import BadRequestError
+from ..utils.prompt_loading import load_prompt
 
 
 class Chat:
@@ -10,14 +11,15 @@ class Chat:
         self.messages: list[Message] = []
 
     def complete_chat(
-        self, input_text: str, username: str, prompt_loader, chat_completer
+        self, input_text: str, username: str, chat_completer
     ) -> tuple[Message, Message]:
         cleaned_input = input_text.strip()
+
         if not cleaned_input:
             raise BadRequestError("Message cannot be empty")
 
         if self._is_first_message():
-            prompt = prompt_loader.load_prompts(cleaned_input, self.philosopher.name)
+            prompt = load_prompt(cleaned_input, self.philosopher.name)
             prompt_msg = Message("user", username, prompt)
             self._add_message(prompt_msg)
 

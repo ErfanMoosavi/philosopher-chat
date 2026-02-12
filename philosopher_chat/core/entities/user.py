@@ -20,6 +20,7 @@ class User:
 
     def select_chat(self, name: str) -> list[Message]:
         chat = self._find_chat(name)
+
         if not chat:
             raise NotFoundError("Chat not found")
 
@@ -40,6 +41,7 @@ class User:
 
     def delete_chat(self, name: str) -> None:
         chat = self._find_chat(name)
+
         if not chat:
             raise NotFoundError("Chat not found")
 
@@ -47,14 +49,12 @@ class User:
             self.selected_chat = None
         del self.chats[name]
 
-    def complete_chat(
-        self, input_text: str, prompt_loader, chat_completer
-    ) -> tuple[Message, Message]:
+    def complete_chat(self, input_text: str, chat_completer) -> tuple[Message, Message]:
         if not self.selected_chat:
             raise BadRequestError("No chats selected")
 
         return self.selected_chat.complete_chat(
-            input_text, self.username, prompt_loader, chat_completer
+            input_text, self.username, chat_completer
         )
 
     def _find_chat(self, name: str) -> Chat | None:

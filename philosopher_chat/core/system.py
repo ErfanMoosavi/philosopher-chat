@@ -1,18 +1,16 @@
 import json
 from pathlib import Path
 
-from .exceptions import BadRequestError, NotFoundError, PermissionDeniedError
 from .entities.chat import Chat
 from .entities.chat_completer import ChatCompleter
 from .entities.message import Message
 from .entities.philosopher import Philosopher
 from .entities.user import User
-from .prompt_loader import PromptLoader
+from .exceptions import BadRequestError, NotFoundError, PermissionDeniedError
 
 
 class System:
     def __init__(self, base_url: str, api_key: str, model_name: str) -> None:
-        self.prompt_loader = PromptLoader()
         self.chat_completer = ChatCompleter(base_url, api_key, model_name)
         self.users: dict[str, User] = {}
         self.philosophers: dict[int, Philosopher] = self._load_philosophers()
@@ -93,9 +91,7 @@ class System:
         if not self.logged_in_user:
             raise BadRequestError("No user is logged in")
 
-        return self.logged_in_user.complete_chat(
-            input_text, self.prompt_loader, self.chat_completer
-        )
+        return self.logged_in_user.complete_chat(input_text, self.chat_completer)
 
     def _find_user(self, username: str) -> User | None:
         return self.users.get(username)
@@ -104,7 +100,7 @@ class System:
         return self.philosophers.get(philosopher_id)
 
     def _load_philosophers(self) -> dict[int, Philosopher]:
-        data_dir = Path(__file__).parent.parent / "data/philosophers.json"
+        data_dir = Path(__file__).parent.parent / "data" / "philosophers.json"
         with open(data_dir, "r", encoding="utf-8") as f:
             raw_philosophers = json.load(f)
 
