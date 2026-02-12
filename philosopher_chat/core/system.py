@@ -11,7 +11,7 @@ from .prompt_loader import PromptLoader
 
 
 class System:
-    def __init__(self, base_url: str, api_key: str, model_name: str):
+    def __init__(self, base_url: str, api_key: str, model_name: str) -> None:
         self.prompt_loader = PromptLoader()
         self.chat_completer = ChatCompleter(base_url, api_key, model_name)
         self.users: dict[str, User] = {}

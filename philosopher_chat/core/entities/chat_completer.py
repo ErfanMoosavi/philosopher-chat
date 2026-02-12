@@ -5,7 +5,7 @@ from .message import Message
 
 
 class ChatCompleter:
-    def __init__(self, base_url: str, api_key: str, model_name: str):
+    def __init__(self, base_url: str, api_key: str, model_name: str) -> None:
         self.client = OpenAI(base_url=base_url, api_key=api_key)
         self.model_name = model_name
 

@@ -4,7 +4,7 @@ from ..exceptions import BadRequestError
 
 
 class Chat:
-    def __init__(self, name: str, philosopher: Philosopher):
+    def __init__(self, name: str, philosopher: Philosopher) -> None:
         self.name = name
         self.philosopher = philosopher
         self.messages: list[Message] = []

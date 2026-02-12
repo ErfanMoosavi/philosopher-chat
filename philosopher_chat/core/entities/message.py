@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 class Message:
-    def __init__(self, role: str, author: str, content: str):
+    def __init__(self, role: str, author: str, content: str) -> None:
         self.author = author
         self.role = role
         self.content = content
