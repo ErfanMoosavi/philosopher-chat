@@ -4,10 +4,6 @@
         "name": "Nietzsche"
     },
     {
-        "id": 1,
-        "name": "Kant"
-    },
-    {
         "id": 2,
         "name": "Schopenhauer"
     },
@@ -16,19 +12,11 @@
         "name": "Marx"
     },
     {
-        "id": 4,
-        "name": "Plato"
-    },
-    {
         "id": 5,
         "name": "Machiavelli"
     },
     {
         "id": 6,
         "name": "Socrates"
-    },
-    {
-        "id": 7,
-        "name": "Heidegger"
     }
 ]
