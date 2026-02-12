@@ -56,7 +56,7 @@ class User:
             raise BadRequestError("No chats selected")
 
         return self.selected_chat.complete_chat(
-            input_text, self.username, chat_completer
+            input_text, self.username, self.name, self.age, chat_completer
         )
 
     def _find_chat(self, name: str) -> Chat | None:
