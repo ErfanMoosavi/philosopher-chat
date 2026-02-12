@@ -39,7 +39,6 @@ philosopher-chat
 
 ---
 
-
 ## ⚙️ Commands
 
 * `signup` - Create a new user account.
