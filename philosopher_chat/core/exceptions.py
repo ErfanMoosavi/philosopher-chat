@@ -1,14 +1,18 @@
-class BadRequestError(Exception):
+class PhilosopherChatError(Exception):
     pass
 
 
-class NotFoundError(Exception):
+class BadRequestError(PhilosopherChatError):
     pass
 
 
-class PermissionDeniedError(Exception):
+class NotFoundError(PhilosopherChatError):
     pass
 
 
-class LLMError(Exception):
+class PermissionDeniedError(PhilosopherChatError):
+    pass
+
+
+class LLMError(PhilosopherChatError):
     pass
