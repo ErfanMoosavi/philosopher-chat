@@ -31,7 +31,11 @@ class PhiloChatCLI:
         self.system = PhiloChat(base_url, api_key, model_name)
         self.io = ConsoleIOHandler()
         self.help_menu = "Available commands:\n" + "\n".join(
-            [f"\t-{command.value}" for command in Commands]
+            [
+                f"\t-{command.value}"
+                for command in Commands
+                if command.value != "exit_chat"
+            ]
         )
 
     def run(self) -> None:
