@@ -105,17 +105,17 @@ class PhiloChat:
 
         return self.logged_in_user.delete_chat(name)
 
-    def list_philosophers(self) -> list[Philosopher]:
-        if not self.philosophers:
-            raise NotFoundError("No philosopher found")
-
-        return list(self.philosophers.values())
-
     def complete_chat(self, input_text: str) -> tuple[Message, Message]:
         if not self.logged_in_user:
             raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.complete_chat(input_text, self.chat_completer)
+
+    def list_philosophers(self) -> list[Philosopher]:
+        if not self.philosophers:
+            raise NotFoundError("No philosopher found")
+
+        return list(self.philosophers.values())
 
     def _find_user(self, username: str) -> User | None:
         return self.users.get(username)
