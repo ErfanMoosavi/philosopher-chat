@@ -43,7 +43,7 @@ class User:
 
     def exit_chat(self) -> None:
         if not self.selected_chat:
-            raise BadRequestError("No chats selected")
+            raise BadRequestError("No chat is selected")
 
         self.selected_chat = None
 
