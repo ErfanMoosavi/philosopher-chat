@@ -3,8 +3,9 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 
-from philo_chat.src.core.exceptions import (
+from philo_chat.src.core import (
     BadRequestError,
+    LLMError,
     NotFoundError,
     PermissionDeniedError,
 )
@@ -24,31 +25,16 @@ def root():
     return {"message": "Philosopher Chat API", "status": "running"}
 
 
-@app.get("/philosophers", status_code=status.HTTP_200_OK)
-def list_philosophers():
-    try:
-        philosophers = pc.list_philosophers()
-        return philosophers
-    except NotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No philosophers found"
-        )
-
-
 @app.post("/signup", status_code=status.HTTP_201_CREATED)
 def signup(username: str, password: str):
     try:
         pc.signup(username, password)
         return {"message": "User created successfully"}
-    except PermissionDeniedError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="You are already logged in"
-        )
-    except BadRequestError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Username {username} already taken",
-        )
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except BadRequestError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @app.post("/login", status_code=status.HTTP_200_OK)
@@ -56,16 +42,11 @@ def login(username: str, password: str):
     try:
         pc.login(username, password)
         return {"message": "Logged in successfully"}
+
     except PermissionDeniedError as e:
-        if "already logged in" in str(e).lower():
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Wrong password"
-        )
-    except NotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Username not found"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
 
 @app.post("/logout", status_code=status.HTTP_200_OK)
@@ -73,10 +54,9 @@ def logout():
     try:
         pc.logout()
         return {"message": "Logged out successfully"}
-    except PermissionDeniedError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="No user is logged in"
-        )
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
 @app.delete("/delete_account", status_code=status.HTTP_200_OK)
@@ -84,7 +64,106 @@ def delete_account():
     try:
         pc.delete_account()
         return {"message": "Account deleted successfully"}
-    except PermissionDeniedError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="No user is logged in"
-        )
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+
+@app.put("/set_name", status_code=status.HTTP_200_OK)
+def set_name(name: str):
+    try:
+        pc.set_name(name)
+        return {"message": "Set name successfully"}
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+
+@app.put("/set_age", status_code=status.HTTP_200_OK)
+def set_age(age: int):
+    try:
+        pc.set_age(age)
+        return {"message": "Set age successfully"}
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+
+@app.post("/new_chat", status_code=status.HTTP_200_OK)
+def new_chat(chat_name: str, philosopher_id: int):
+    try:
+        pc.new_chat(chat_name, philosopher_id)
+        return {"message": "Added chat successfully"}
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+
+@app.put("/select_chat", status_code=status.HTTP_200_OK)
+def select_chat(chat_name: str):
+    try:
+        pc.select_chat(chat_name)
+        return {"message": "Selected chat successfully"}
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@app.get("/chat_list", status_code=status.HTTP_200_OK)
+def list_chats():
+    try:
+        chat_list = pc.list_chats()
+        return chat_list
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@app.put("/exit_chat", status_code=status.HTTP_200_OK)
+def exit_chat():
+    try:
+        pc.exit_chat()
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except BadRequestError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@app.delete("/delete_chat", status_code=status.HTTP_200_OK)
+def delete_chat(chat_name: str):
+    try:
+        pc.delete_chat(chat_name)
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@app.get("/philosophers", status_code=status.HTTP_200_OK)
+def list_philosophers():
+    try:
+        philosophers = pc.list_philosophers()
+        return philosophers
+
+    except NotFoundError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+
+
+@app.get("/complete_chat", status_code=status.HTTP_200_OK)
+def complete_chat(input_text: str):
+    try:
+        ai_msg, user_msg = pc.complete_chat(input_text)
+        return ai_msg, user_msg
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+    except BadRequestError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except LLMError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
