@@ -25,7 +25,7 @@ class PhiloChat:
         user = self._find_user(username)
 
         if self.logged_in_user:
-            raise PermissionDeniedError("You've already logged in")
+            raise PermissionDeniedError("You are already logged in")
         elif not user:
             raise NotFoundError("Username not found")
         elif user.password != password:
@@ -60,32 +60,32 @@ class PhiloChat:
 
     def new_chat(self, name: str, philosopher_id: int) -> None:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         philosopher = self._find_philosopher(philosopher_id)
         return self.logged_in_user.new_chat(name, philosopher)
 
     def select_chat(self, name: str) -> list[Message]:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.select_chat(name)
 
     def list_chats(self) -> list[Chat]:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.list_chats()
 
     def exit_chat(self) -> None:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.exit_chat()
 
     def delete_chat(self, name: str) -> None:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.delete_chat(name)
 
@@ -97,7 +97,7 @@ class PhiloChat:
 
     def complete_chat(self, input_text: str) -> tuple[Message, Message]:
         if not self.logged_in_user:
-            raise BadRequestError("No user is logged in")
+            raise PermissionDeniedError("No user is logged in")
 
         return self.logged_in_user.complete_chat(input_text, self.chat_completer)
 
