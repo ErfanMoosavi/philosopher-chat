@@ -61,28 +61,18 @@ class PhiloChat:
 
         self.logged_in_user.set_age(age)
 
-    def set_profile_picture(self, source_path: str) -> str:
+    def set_profile_picture(self, file_object, filename: str) -> None:
         if not self.logged_in_user:
             raise PermissionDeniedError("No user is logged in")
 
-        source = Path(source_path)
-        if not source.exists() or not source.is_file():
-            raise NotFoundError(f"The file {source_path} does not exist")
-
-        allowed_extensions = {".png", ".jpg", ".jpeg"}
-        if source.suffix.lower() not in allowed_extensions:
-            raise BadRequestError("Invalid file type, only PNG and JPG allowed")
-
-        new_filename = f"{self.logged_in_user.username}_profile{source.suffix}"
+        extension = Path(filename).suffix
+        new_filename = f"{self.logged_in_user.username}_profile{extension}"
         destination = self.images_dir / new_filename
 
-        try:
-            shutil.copy(source, destination)
-        except Exception as e:
-            raise BadRequestError(f"Failed to save image: {e}")
+        with open(destination, "wb") as buffer:
+            shutil.copyfileobj(file_object, buffer)
 
         self.logged_in_user.set_profile_picture(str(destination))
-        return str(destination)
 
     def new_chat(self, name: str, philosopher_id: int) -> None:
         if not self.logged_in_user:

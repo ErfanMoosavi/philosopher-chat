@@ -1,7 +1,7 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, File, UploadFile
 
 from src.core import (
     BadRequestError,
@@ -84,6 +84,16 @@ def set_age(age: int):
     try:
         pc.set_age(age)
         return {"message": "Set age successfully"}
+
+    except PermissionDeniedError as e:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
+
+
+@app.post("/set_profile_picture", status_code=status.HTTP_200_OK)
+async def set_profile_picture(file: UploadFile = File(...)):
+    try:
+        pc.set_profile_picture(file.file, file.filename)
+        return {"message": "Set profile picture successfully"}
 
     except PermissionDeniedError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
