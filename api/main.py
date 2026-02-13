@@ -3,13 +3,13 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 
-from philo_chat.src.core import (
+from src.core import (
     BadRequestError,
     LLMError,
     NotFoundError,
     PermissionDeniedError,
 )
-from philo_chat.src.philo_chat import PhiloChat
+from src.philo_chat import PhiloChat
 
 load_dotenv()
 openai_api_key = os.getenv("OPENAI_API_KEY")
@@ -99,7 +99,7 @@ def new_chat(chat_name: str, philosopher_id: int):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
 
 
-@app.put("/select_chat", status_code=status.HTTP_200_OK)
+@app.post("/select_chat", status_code=status.HTTP_200_OK)
 def select_chat(chat_name: str):
     try:
         pc.select_chat(chat_name)
@@ -127,6 +127,7 @@ def list_chats():
 def exit_chat():
     try:
         pc.exit_chat()
+        return {"message": "Exited chat successfully"}
 
     except PermissionDeniedError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
@@ -138,6 +139,7 @@ def exit_chat():
 def delete_chat(chat_name: str):
     try:
         pc.delete_chat(chat_name)
+        return {"message": "Deleted chat successfully"}
 
     except PermissionDeniedError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
