@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 
 from .core.entities import Chat, ChatCompleter, Message, Philosopher, User
@@ -11,6 +12,8 @@ class PhiloChat:
         self.users: dict[str, User] = {}
         self.philosophers: dict[int, Philosopher] = self._load_philosophers()
         self.logged_in_user: User | None = None
+        self.images_dir = Path(__file__).parent / "data/user_images"
+        self.images_dir.mkdir(parents=True, exist_ok=True)
 
     def signup(self, username: str, password: str) -> None:
         if self.logged_in_user:
@@ -57,6 +60,29 @@ class PhiloChat:
             raise PermissionDeniedError("No user is logged in")
 
         self.logged_in_user.set_age(age)
+
+    def set_profile_picture(self, source_path: str) -> str:
+        if not self.logged_in_user:
+            raise PermissionDeniedError("No user is logged in")
+
+        source = Path(source_path)
+        if not source.exists() or not source.is_file():
+            raise NotFoundError(f"The file {source_path} does not exist")
+
+        allowed_extensions = {".png", ".jpg", ".jpeg"}
+        if source.suffix.lower() not in allowed_extensions:
+            raise BadRequestError("Invalid file type, only PNG and JPG allowed")
+
+        new_filename = f"{self.logged_in_user.username}_profile{source.suffix}"
+        destination = self.images_dir / new_filename
+
+        try:
+            shutil.copy(source, destination)
+        except Exception as e:
+            raise BadRequestError(f"Failed to save image: {e}")
+
+        self.logged_in_user.set_profile_picture(str(destination))
+        return str(destination)
 
     def new_chat(self, name: str, philosopher_id: int) -> None:
         if not self.logged_in_user:
